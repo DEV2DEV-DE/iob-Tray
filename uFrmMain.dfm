@@ -11,13 +11,11 @@ object frmSettings: TfrmSettings
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
-  OldCreateOrder = False
   Position = poScreenCenter
   OnCreate = FormCreate
   DesignSize = (
     379
     183)
-  PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
     Left = 8
@@ -74,6 +72,7 @@ object frmSettings: TfrmSettings
     ShowHint = True
     TabOrder = 0
     Text = 'http://192.168.178.9:8082/getPlainValue/alias.0.strom.power'
+    ExplicitWidth = 355
   end
   object edtInterval: TEdit
     Left = 88
@@ -100,6 +99,8 @@ object frmSettings: TfrmSettings
     Caption = 'OK'
     TabOrder = 6
     OnClick = btnOKClick
+    ExplicitLeft = 288
+    ExplicitTop = 128
   end
   object btnCancel: TButton
     Left = 215
@@ -110,6 +111,8 @@ object frmSettings: TfrmSettings
     Caption = 'Cancel'
     TabOrder = 5
     OnClick = btnCancelClick
+    ExplicitLeft = 207
+    ExplicitTop = 128
   end
   object edtTitle: TEdit
     Left = 8
@@ -119,6 +122,7 @@ object frmSettings: TfrmSettings
     Anchors = [akLeft, akTop, akRight]
     TabOrder = 1
     Text = 'Leistung:'
+    ExplicitWidth = 355
   end
   object cmbIcons: TComboBoxEx
     Left = 8
@@ -960,7 +964,7 @@ object frmSettings: TfrmSettings
     Left = 200
     Top = 48
     Bitmap = {
-      494C010104000900140010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010104000900040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000002000000001002000000000000020
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -1232,8 +1236,12 @@ object frmSettings: TfrmSettings
       000000000000}
   end
   object mnuPopup: TPopupMenu
-    Left = 200
-    Top = 104
+    Left = 146
+    Top = 50
+    object mniShow: TMenuItem
+      Caption = 'Show'
+      OnClick = mniShowClick
+    end
     object mniExit: TMenuItem
       Caption = 'Exit'
       OnClick = mniExitClick

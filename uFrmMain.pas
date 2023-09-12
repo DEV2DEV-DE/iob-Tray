@@ -37,13 +37,16 @@ type
     Label6: TLabel;
     mnuPopup: TPopupMenu;
     mniExit: TMenuItem;
+    mniShow: TMenuItem;
     procedure btnOKClick(Sender: TObject);
     procedure tmrRequestTimer(Sender: TObject);
     procedure btnCancelClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure mniExitClick(Sender: TObject);
+    procedure mniShowClick(Sender: TObject);
   private
     FSettings: TTraySettings;
+    FRunning: Boolean;
     function GetValue(const AUrl: string): string;
     procedure SetValue();
   public
@@ -76,7 +79,10 @@ end;
 
 procedure TfrmSettings.btnCancelClick(Sender: TObject);
 begin
-  Application.Terminate;
+  if FRunning then
+    Self.Hide
+  else
+    Application.Terminate;
 end;
 
 procedure TfrmSettings.btnOKClick(Sender: TObject);
@@ -91,12 +97,18 @@ begin
   FSettings.IconIndex := cmbIcons.ItemIndex;
   FSettings.Save;
   SetValue;
+  FRunning := True;
   Self.Hide;
 end;
 
 procedure TfrmSettings.mniExitClick(Sender: TObject);
 begin
   Application.Terminate;
+end;
+
+procedure TfrmSettings.mniShowClick(Sender: TObject);
+begin
+  Self.Show;
 end;
 
 procedure TfrmSettings.tmrRequestTimer(Sender: TObject);
