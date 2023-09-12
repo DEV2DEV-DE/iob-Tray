@@ -11,7 +11,7 @@ uses
 begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
-  TStyleManager.TrySetStyle('Charcoal Dark Slate');
+  TStyleManager.TrySetStyle('Windows10 SlateGray');
   Application.CreateForm(TfrmSettings, frmSettings);
   Application.Run;
 end.

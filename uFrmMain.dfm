@@ -4,7 +4,7 @@ object frmSettings: TfrmSettings
   BorderStyle = bsToolWindow
   Caption = 'ioBTray - Settings'
   ClientHeight = 183
-  ClientWidth = 379
+  ClientWidth = 366
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -14,7 +14,7 @@ object frmSettings: TfrmSettings
   Position = poScreenCenter
   OnCreate = FormCreate
   DesignSize = (
-    379
+    366
     183)
   TextHeight = 13
   object Label1: TLabel
@@ -62,7 +62,7 @@ object frmSettings: TfrmSettings
   object edtEndpoint: TEdit
     Left = 8
     Top = 24
-    Width = 363
+    Width = 350
     Height = 21
     Hint = 'Endpoint for ioBroker-SimpleApi-Adapter'
     Anchors = [akLeft, akTop, akRight]
@@ -72,7 +72,7 @@ object frmSettings: TfrmSettings
     ShowHint = True
     TabOrder = 0
     Text = 'http://192.168.178.9:8082/getPlainValue/alias.0.strom.power'
-    ExplicitWidth = 355
+    ExplicitWidth = 353
   end
   object edtInterval: TEdit
     Left = 88
@@ -97,7 +97,7 @@ object frmSettings: TfrmSettings
     Text = 'W'
   end
   object btnOK: TButton
-    Left = 296
+    Left = 283
     Top = 150
     Width = 75
     Height = 25
@@ -105,11 +105,11 @@ object frmSettings: TfrmSettings
     Caption = 'OK'
     TabOrder = 6
     OnClick = btnOKClick
-    ExplicitLeft = 288
-    ExplicitTop = 128
+    ExplicitLeft = 286
+    ExplicitTop = 130
   end
   object btnCancel: TButton
-    Left = 215
+    Left = 202
     Top = 150
     Width = 75
     Height = 25
@@ -117,13 +117,13 @@ object frmSettings: TfrmSettings
     Caption = 'Cancel'
     TabOrder = 5
     OnClick = btnCancelClick
-    ExplicitLeft = 207
-    ExplicitTop = 128
+    ExplicitLeft = 205
+    ExplicitTop = 130
   end
   object edtTitle: TEdit
     Left = 8
     Top = 64
-    Width = 363
+    Width = 350
     Height = 21
     Hint = 'Title for the displayed value'
     Anchors = [akLeft, akTop, akRight]
@@ -131,7 +131,7 @@ object frmSettings: TfrmSettings
     ShowHint = True
     TabOrder = 1
     Text = 'Leistung:'
-    ExplicitWidth = 355
+    ExplicitWidth = 353
   end
   object cmbIcons: TComboBoxEx
     Left = 8
@@ -963,18 +963,18 @@ object frmSettings: TfrmSettings
     Icons = ilIcons
     PopupMenu = mnuPopup
     Visible = True
-    Left = 312
-    Top = 48
+    Left = 246
+    Top = 180
   end
   object tmrRequest: TTimer
     Enabled = False
     OnTimer = tmrRequestTimer
-    Left = 256
-    Top = 48
+    Left = 171
+    Top = 180
   end
   object ilIcons: TImageList
-    Left = 200
-    Top = 48
+    Left = 101
+    Top = 180
     Bitmap = {
       494C010104000900040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000002000000001002000000000000020
@@ -1248,8 +1248,8 @@ object frmSettings: TfrmSettings
       000000000000}
   end
   object mnuPopup: TPopupMenu
-    Left = 146
-    Top = 50
+    Left = 32
+    Top = 180
     object mniShow: TMenuItem
       Caption = 'Show'
       OnClick = mniShowClick
