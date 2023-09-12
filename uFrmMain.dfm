@@ -64,7 +64,7 @@ object frmSettings: TfrmSettings
     Top = 24
     Width = 363
     Height = 21
-    Hint = 'Endpoint f'#252'r ioBroker-SimpleApi-Adapter'
+    Hint = 'Endpoint for ioBroker-SimpleApi-Adapter'
     Anchors = [akLeft, akTop, akRight]
     DoubleBuffered = False
     ParentDoubleBuffered = False
@@ -79,6 +79,9 @@ object frmSettings: TfrmSettings
     Top = 107
     Width = 57
     Height = 21
+    Hint = 'Refresh-Interval for calls to the endpoint'
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 3
     Text = '10000'
   end
@@ -87,6 +90,9 @@ object frmSettings: TfrmSettings
     Top = 107
     Width = 65
     Height = 21
+    Hint = 'Unit. Will be shown behind the value'
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 2
     Text = 'W'
   end
@@ -119,7 +125,10 @@ object frmSettings: TfrmSettings
     Top = 64
     Width = 363
     Height = 21
+    Hint = 'Title for the displayed value'
     Anchors = [akLeft, akTop, akRight]
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 1
     Text = 'Leistung:'
     ExplicitWidth = 355
@@ -129,6 +138,7 @@ object frmSettings: TfrmSettings
     Top = 150
     Width = 65
     Height = 22
+    Hint = 'Image for the tray icon'
     ItemsEx = <
       item
         Caption = '0'
@@ -150,6 +160,8 @@ object frmSettings: TfrmSettings
         ImageIndex = 3
         SelectedImageIndex = 3
       end>
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 4
     Text = '0'
     Images = ilIcons
