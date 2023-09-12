@@ -1,6 +1,6 @@
 # ioBroker-TrayIcon
 
-[![GitHub license](https://img.shields.io/github/license/DEV2DEV-DE/iob-tray)](https://github.com/DEV2DEV-DE/iob-tray/blob/main/LICENSE)
+[![GitHub license](https://img.shields.io/github/license/DEV2DEV-DE/iob-tray)](https://github.com/DEV2DEV-DE/iob-tray/blob/master/LICENSE)
 ![GitHub repo size](https://img.shields.io/github/repo-size/DEV2DEV-DE/iob-tray)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/DEV2DEV-DE/iob-tray)
 ![GitHub last commit](https://img.shields.io/github/last-commit/DEV2DEV-DE/iob-tray)
