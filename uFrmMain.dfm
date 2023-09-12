@@ -1,4 +1,4 @@
-object Form1: TForm1
+object frmSettings: TfrmSettings
   Left = 0
   Top = 0
   BorderStyle = bsToolWindow
@@ -87,6 +87,7 @@ object Form1: TForm1
     Height = 25
     Caption = 'Cancel'
     TabOrder = 3
+    OnClick = btnCancelClick
   end
   object trayIcon: TTrayIcon
     Animate = True

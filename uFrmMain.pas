@@ -7,7 +7,7 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, System.Win.TaskbarCore, Vcl.Taskbar, Vcl.ExtCtrls, Vcl.StdCtrls;
 
 type
-  TForm1 = class(TForm)
+  TfrmSettings = class(TForm)
     trayIcon: TTrayIcon;
     Label1: TLabel;
     edtEndpoint: TEdit;
@@ -21,6 +21,7 @@ type
     tmrRequest: TTimer;
     procedure btnOKClick(Sender: TObject);
     procedure tmrRequestTimer(Sender: TObject);
+    procedure btnCancelClick(Sender: TObject);
   private
     function GetValue(const AUrl: string): string;
   public
@@ -28,7 +29,7 @@ type
   end;
 
 var
-  Form1: TForm1;
+  frmSettings: TfrmSettings;
 
 implementation
 
@@ -37,14 +38,20 @@ uses
 
 {$R *.dfm}
 
-procedure TForm1.btnOKClick(Sender: TObject);
+procedure TfrmSettings.btnCancelClick(Sender: TObject);
+begin
+  Application.Terminate;
+end;
+
+procedure TfrmSettings.btnOKClick(Sender: TObject);
 begin
   tmrRequest.Interval := StrToInt(edtInterval.Text);
   tmrRequest.Enabled := tmrRequest.Interval > 0;
+  trayIcon.Hint := GetValue(edtEndpoint.Text) + ' ' + edtUnit.Text;
   Self.Hide;
 end;
 
-function TForm1.GetValue(const AUrl: string): string;
+function TfrmSettings.GetValue(const AUrl: string): string;
 var
   HTTP: TIdHTTP;
   ContentStream: TStringStream;
@@ -63,7 +70,7 @@ begin
   end;
 end;
 
-procedure TForm1.tmrRequestTimer(Sender: TObject);
+procedure TfrmSettings.tmrRequestTimer(Sender: TObject);
 begin
   trayIcon.Hint := GetValue(edtEndpoint.Text) + ' ' + edtUnit.Text;
 end;
