@@ -10,4 +10,12 @@
 ![image](https://github.com/DEV2DEV-DE/iob-Tray/assets/95883579/2d6104d8-d572-41a2-a770-5f9969fbfe7f)
 
 Kleines Windows-Tool, das über einen HTTP-Request einen Wert aus ioBroker abruft und diesen als Hint zu einem Tray-Icon zeigt.
+
 Es wird der Simple-Api-Adapter benötigt!
+
+Die Icons habe ich wieder aus dem Repo entfernt, damit es keine Probleme mit dem Copyright gibt.
+
+Wer eigene Icons hinzufügen möchte, findet sicher auf den einschlägigen Seiten passende Symbole.
+Mit passenden Tools lassen die sich ganz einfach in die Ressource einfügen.
+
+Ich empfehle dazu den [Resource-Hacker](http://www.angusj.com/resourcehacker/)
