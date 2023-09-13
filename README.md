@@ -6,8 +6,7 @@
 ![GitHub last commit](https://img.shields.io/github/last-commit/DEV2DEV-DE/iob-tray)
 ![GitHub issues](https://img.shields.io/github/issues/DEV2DEV-DE/iob-tray)
 
-![image](https://github.com/DEV2DEV-DE/iob-Tray/assets/95883579/27484ee6-b2b6-4450-b20b-5f58a3521d47)
-![image](https://github.com/DEV2DEV-DE/iob-Tray/assets/95883579/2d6104d8-d572-41a2-a770-5f9969fbfe7f)
+![grafik](https://github.com/DEV2DEV-DE/iob-Tray/assets/95883579/239dc745-2ed5-472f-a155-758f55d53e85)
 
 Kleines Windows-Tool, das über einen HTTP-Request einen Wert aus ioBroker abruft und diesen als Hint zu einem Tray-Icon zeigt.
 
