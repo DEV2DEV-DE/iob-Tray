@@ -61,8 +61,10 @@ implementation
 
 uses
   System.UITypes,
+  System.NetEncoding,
   IdHTTP,
-  XmlIntf, XmlDoc;
+  XmlIntf,
+  XmlDoc;
 
 {$R *.dfm}
 
@@ -160,7 +162,7 @@ begin
     try
       HTTP.Get(AUrl, ContentStream);
       if HTTP.ResponseCode = 200 then
-        Result := ContentStream.DataString
+        Result := AnsiDequotedStr(TNetEncoding.URL.Decode(ContentStream.DataString), '"')
       else
         Result := '-/-';
     finally
@@ -173,8 +175,18 @@ begin
 end;
 
 procedure TfrmSettings.SetValue();
+var
+  tmpValue: string;
 begin
-  trayIcon.Hint := FSettings.Title + #13 + GetValue(FSettings.Endpoint) + ' ' + FSettings.ValueUnit;
+  if not FSettings.Title.IsEmpty then
+    tmpValue := FSettings.Title + #13 + GetValue(FSettings.Endpoint)
+  else
+    tmpValue := GetValue(FSettings.Endpoint);
+
+  if not FSettings.ValueUnit.IsEmpty then
+    tmpValue := tmpValue  + ' ' + FSettings.ValueUnit;
+
+  trayIcon.Hint := tmpValue;
 end;
 
 { TTraySettings }
