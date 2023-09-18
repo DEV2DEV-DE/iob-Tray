@@ -12,6 +12,8 @@ Kleines Windows-Tool, das über einen HTTP-Request einen Wert aus ioBroker abruf
 
 Es wird der Simple-Api-Adapter benötigt!
 
+Mehrzeilige Ausgaben lassen sich über Blockly/JavaScript mit einem eigenen Datenpunkt in ```0_userdata``` erzeugen, indem an den entprechenden Stellen ein ```%0a``` eingefügt wird. 
+
 Die Icons habe ich wieder aus dem Repo entfernt, damit es keine Probleme mit dem Copyright gibt.
 
 Wer eigene Icons hinzufügen möchte, findet sicher auf den einschlägigen Seiten passende Symbole.
