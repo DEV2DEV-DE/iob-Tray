@@ -10,7 +10,7 @@
 
 Kleines Windows-Tool, das über einen HTTP-Request einen Wert aus ioBroker abruft und diesen als Hint zu einem Tray-Icon zeigt.
 
-Es wird der Simple-Api-Adapter benötigt!
+Es wird entweder der Simple-Api-Adapter oder das eingebaute Simple-API im Web-Adapter benötigt!
 
 Mehrzeilige Ausgaben lassen sich über Blockly/JavaScript mit einem eigenen Datenpunkt in ```0_userdata``` erzeugen, indem an den entprechenden Stellen ein ```%0a``` eingefügt wird. 
 
