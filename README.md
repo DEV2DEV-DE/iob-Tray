@@ -14,6 +14,8 @@ Es wird entweder der Simple-Api-Adapter oder das eingebaute Simple-API im Web-Ad
 
 Mehrzeilige Ausgaben lassen sich über Blockly/JavaScript mit einem eigenen Datenpunkt in ```0_userdata``` erzeugen, indem an den entprechenden Stellen ein ```%0a``` eingefügt wird. 
 
+Nach einem ersten erfolgreichen Start lässt sich das Tool künftig mit dem Parameter ```skip``` auch im Hintergrund starten.
+
 Die Icons habe ich wieder aus dem Repo entfernt, damit es keine Probleme mit dem Copyright gibt.
 
 Wer eigene Icons hinzufügen möchte, findet sicher auf den einschlägigen Seiten passende Symbole.
