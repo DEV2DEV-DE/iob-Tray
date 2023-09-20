@@ -74,6 +74,12 @@ begin
     edtUnit.Text := FSettings.ValueUnit;
     edtInterval.Text := FSettings.Interval.ToString;
     cmbIcons.ItemIndex := FSettings.IconIndex;
+    if not FRunning and ParamCount.ToBoolean and ParamStr(1).ToLower.Equals('skip') then
+    begin
+      SetValue;
+      FRunning := True;
+      Application.ShowMainForm := False;
+    end;
   end;
 end;
 
