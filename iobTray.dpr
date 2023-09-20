@@ -1,5 +1,7 @@
 program iobTray;
 
+{$R *.dres}
+
 uses
   Vcl.Forms,
   uFrmMain in 'uFrmMain.pas' {frmSettings},

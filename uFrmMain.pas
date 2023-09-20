@@ -49,6 +49,7 @@ type
     FRunning: Boolean;
     function GetValue(const AUrl: string): string;
     procedure SetValue();
+    procedure PrepareIconList;
   public
     { Public-Deklarationen }
   end;
@@ -59,13 +60,20 @@ var
 implementation
 
 uses
+  System.UITypes,
+  System.NetEncoding,
   IdHTTP,
-  XmlIntf, XmlDoc;
+  XmlIntf,
+  XmlDoc;
 
 {$R *.dfm}
 
+const
+  ICON_COUNT = 30;
+
 procedure TfrmSettings.FormCreate(Sender: TObject);
 begin
+  PrepareIconList;
   cmbIcons.ItemIndex := 0;
   if FSettings.Load then
   begin
@@ -117,6 +125,33 @@ begin
   Self.Show;
 end;
 
+procedure TfrmSettings.PrepareIconList;
+var
+  i: Integer;
+  Icon: TIcon;
+  IconName: string;
+begin
+  cmbIcons.Items.Clear;
+  ilIcons.Clear;
+  try
+    Icon := TIcon.Create;
+    try
+      for i := 1 to ICON_COUNT do
+      begin
+        IconName := Format('ICON_%2.2d', [i]);
+        Icon.LoadFromResourceName(HInstance, IconName);
+        ilIcons.AddIcon(Icon);
+        cmbIcons.ItemsEx.AddItem(IconName, i-1, i-1, -1, -1, nil);
+      end;
+    finally
+      Icon.Free;
+    end;
+  except
+    on E:Exception do
+      TaskMessageDlg('Error reading icons', E.Message, mtError, [mbOK], 0);
+  end;
+end;
+
 procedure TfrmSettings.tmrRequestTimer(Sender: TObject);
 begin
   SetValue;
@@ -127,23 +162,37 @@ var
   HTTP: TIdHTTP;
   ContentStream: TStringStream;
 begin
-  HTTP := TIdHTTP.Create(nil);
-  ContentStream := TStringStream.Create;
   try
-    HTTP.Get(AUrl, ContentStream);
-    if HTTP.ResponseCode = 200 then
-      Result := ContentStream.DataString
-    else
-      Result := '-/-';
-  finally
-    ContentStream.Free;
-    HTTP.Free;
+    HTTP := TIdHTTP.Create(nil);
+    ContentStream := TStringStream.Create;
+    try
+      HTTP.Get(AUrl, ContentStream);
+      if HTTP.ResponseCode = 200 then
+        Result := AnsiDequotedStr(TNetEncoding.URL.Decode(ContentStream.DataString), '"')
+      else
+        Result := '-/-';
+    finally
+      ContentStream.Free;
+      HTTP.Free;
+    end;
+  except
+    Result := '-/-';
   end;
 end;
 
 procedure TfrmSettings.SetValue();
+var
+  tmpValue: string;
 begin
-  trayIcon.Hint := FSettings.Title + #13 + GetValue(FSettings.Endpoint) + ' ' + FSettings.ValueUnit;
+  if not FSettings.Title.IsEmpty then
+    tmpValue := FSettings.Title + #13 + GetValue(FSettings.Endpoint)
+  else
+    tmpValue := GetValue(FSettings.Endpoint);
+
+  if not FSettings.ValueUnit.IsEmpty then
+    tmpValue := tmpValue  + ' ' + FSettings.ValueUnit;
+
+  trayIcon.Hint := tmpValue;
 end;
 
 { TTraySettings }
@@ -157,7 +206,7 @@ begin
   Filename := ChangeFileExt(Application.ExeName, '.cnf');
   Result := False;
   if FileExists(Filename) then
-  begin
+  try
     XML := NewXMLDocument('1.0');
     try
       XML.LoadFromFile(Filename);
@@ -180,6 +229,9 @@ begin
     finally
       XML := nil;
     end;
+  except
+    on E:Exception do
+      TaskMessageDlg('Error loading settings', E.Message, mtError, [mbOK], 0);
   end;
 end;
 
@@ -189,26 +241,32 @@ var
   XML: IXMLDocument;
   Root, Node: IXMLNode;
 begin
-  XML := NewXMLDocument('1.0');
+  Result := False;
   try
-    XML.Options := [doNodeAutoIndent];
-    XML.ParseOptions := [poPreserveWhiteSpace];
-    Root := XML.AddChild('iobTray');
-    Node := XML.DocumentElement.AddChild('endpoint');
-    Node.Attributes['value'] := Endpoint;
-    Node := XML.DocumentElement.AddChild('title');
-    Node.Attributes['value'] := Title;
-    Node := XML.DocumentElement.AddChild('interval');
-    Node.Attributes['value'] := Interval.ToString;
-    Node := XML.DocumentElement.AddChild('unit');
-    Node.Attributes['value'] := ValueUnit;
-    Node := XML.DocumentElement.AddChild('icon');
-    Node.Attributes['value'] := IconIndex.ToString;
-    Filename := ChangeFileExt(Application.ExeName, '.cnf');
-    xml.SaveToFile(Filename);
-    Result := True;
-  finally
-    XML := nil;
+    XML := NewXMLDocument('1.0');
+    try
+      XML.Options := [doNodeAutoIndent];
+      XML.ParseOptions := [poPreserveWhiteSpace];
+      Root := XML.AddChild('iobTray');
+      Node := XML.DocumentElement.AddChild('endpoint');
+      Node.Attributes['value'] := Endpoint;
+      Node := XML.DocumentElement.AddChild('title');
+      Node.Attributes['value'] := Title;
+      Node := XML.DocumentElement.AddChild('interval');
+      Node.Attributes['value'] := Interval.ToString;
+      Node := XML.DocumentElement.AddChild('unit');
+      Node.Attributes['value'] := ValueUnit;
+      Node := XML.DocumentElement.AddChild('icon');
+      Node.Attributes['value'] := IconIndex.ToString;
+      Filename := ChangeFileExt(Application.ExeName, '.cnf');
+      xml.SaveToFile(Filename);
+      Result := True;
+    finally
+      XML := nil;
+    end;
+  except
+    on E:Exception do
+      TaskMessageDlg('Error saving settings', E.Message, mtError, [mbOK], 0);
   end;
 end;
 
