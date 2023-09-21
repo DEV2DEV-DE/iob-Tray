@@ -1,6 +1,6 @@
 program iobTray;
 
-{$R *.dres}
+
 
 uses
   Vcl.Forms,
@@ -13,6 +13,7 @@ uses
 begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
+  Application.Title := 'ioBroker - Info';
   TStyleManager.TrySetStyle('Windows10 SlateGray');
   Application.CreateForm(TfrmSettings, frmSettings);
   Application.Run;

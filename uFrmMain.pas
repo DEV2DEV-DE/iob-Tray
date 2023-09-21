@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, System.Win.TaskbarCore, Vcl.Taskbar, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.ComCtrls,
-  System.ImageList, Vcl.ImgList, Vcl.Menus;
+  System.ImageList, Vcl.ImgList, Vcl.Menus, System.Notification;
 
 type
   TTraySettings = record
@@ -14,6 +14,7 @@ type
     ValueUnit: string;
     Interval: Cardinal;
     IconIndex: Integer;
+    Notification: Boolean;
     function Load: Boolean;
     function Save: Boolean;
   end;
@@ -38,6 +39,8 @@ type
     mnuPopup: TPopupMenu;
     mniExit: TMenuItem;
     mniShow: TMenuItem;
+    ncToast: TNotificationCenter;
+    chkNotification: TCheckBox;
     procedure btnOKClick(Sender: TObject);
     procedure tmrRequestTimer(Sender: TObject);
     procedure btnCancelClick(Sender: TObject);
@@ -47,6 +50,7 @@ type
   private
     FSettings: TTraySettings;
     FRunning: Boolean;
+    FLastValue: string;
     function GetValue(const AUrl: string): string;
     procedure SetValue();
     procedure PrepareIconList;
@@ -67,6 +71,7 @@ uses
   XmlDoc;
 
 {$R *.dfm}
+{$R iobTrayIcons.res}
 
 const
   ICON_COUNT = 30;
@@ -82,6 +87,7 @@ begin
     edtUnit.Text := FSettings.ValueUnit;
     edtInterval.Text := FSettings.Interval.ToString;
     cmbIcons.ItemIndex := FSettings.IconIndex;
+    chkNotification.Checked := FSettings.Notification;
     if not FRunning and ParamCount.ToBoolean and ParamStr(1).ToLower.Equals('skip') then
     begin
       SetValue;
@@ -109,6 +115,7 @@ begin
   FSettings.ValueUnit := edtUnit.Text;
   FSettings.Interval := StrToInt(edtInterval.Text);
   FSettings.IconIndex := cmbIcons.ItemIndex;
+  FSettings.Notification := chkNotification.Checked;
   FSettings.Save;
   SetValue;
   FRunning := True;
@@ -183,16 +190,35 @@ end;
 procedure TfrmSettings.SetValue();
 var
   tmpValue: string;
+  Notification: TNotification;
+  LValue: string;
 begin
+  LValue := GetValue(FSettings.Endpoint);
+
   if not FSettings.Title.IsEmpty then
-    tmpValue := FSettings.Title + #13 + GetValue(FSettings.Endpoint)
+    tmpValue := FSettings.Title + #13 + LValue
   else
-    tmpValue := GetValue(FSettings.Endpoint);
+    tmpValue := LValue;
 
   if not FSettings.ValueUnit.IsEmpty then
-    tmpValue := tmpValue  + ' ' + FSettings.ValueUnit;
+    tmpValue := Format('%s %s', [tmpValue, FSettings.ValueUnit]);
 
   trayIcon.Hint := tmpValue;
+
+  if FSettings.Notification and not LValue.Equals(FLastValue) then
+  begin
+    Notification := ncToast.CreateNotification;
+    try
+      Notification.Name := 'ioBroker - Info';
+      Notification.Title := FSettings.Title;
+      Notification.AlertBody := Format('%s %s', [LValue, FSettings.ValueUnit]);
+      ncToast.PresentNotification(Notification);
+    finally
+      Notification.Free;
+    end;
+    FLastValue := LValue;
+  end;
+
 end;
 
 { TTraySettings }
@@ -225,6 +251,9 @@ begin
       Node := XML.DocumentElement.ChildNodes.FindNode('icon');
       if Assigned(Node) then
         IconIndex := VarAsType(Node.Attributes['value'], varInteger);
+      Node := XML.DocumentElement.ChildNodes.FindNode('notification');
+      if Assigned(Node) then
+        Notification := VarAsType(Node.Attributes['value'], varBoolean);
       Result := True;
     finally
       XML := nil;
@@ -258,6 +287,8 @@ begin
       Node.Attributes['value'] := ValueUnit;
       Node := XML.DocumentElement.AddChild('icon');
       Node.Attributes['value'] := IconIndex.ToString;
+      Node := XML.DocumentElement.AddChild('notification');
+      Node.Attributes['value'] := Notification.ToString;
       Filename := ChangeFileExt(Application.ExeName, '.cnf');
       xml.SaveToFile(Filename);
       Result := True;
