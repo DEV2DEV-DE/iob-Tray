@@ -6,7 +6,8 @@ uses
   Vcl.Forms,
   uFrmMain in 'uFrmMain.pas' {frmSettings},
   Vcl.Themes,
-  Vcl.Styles;
+  Vcl.Styles,
+  uRequestHandler in 'uRequestHandler.pas' {RequestHandler: TWebModule};
 
 {$R *.res}
 

@@ -3,7 +3,7 @@ object frmSettings: TfrmSettings
   Top = 0
   BorderStyle = bsToolWindow
   Caption = 'ioBTray - Settings'
-  ClientHeight = 183
+  ClientHeight = 233
   ClientWidth = 366
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -15,7 +15,7 @@ object frmSettings: TfrmSettings
   OnCreate = FormCreate
   DesignSize = (
     366
-    183)
+    233)
   TextHeight = 13
   object Label1: TLabel
     Left = 8
@@ -54,10 +54,18 @@ object frmSettings: TfrmSettings
   end
   object Label6: TLabel
     Left = 8
-    Top = 134
+    Top = 139
     Width = 25
     Height = 13
     Caption = 'Icon:'
+  end
+  object Label7: TLabel
+    Left = 202
+    Top = 140
+    Width = 24
+    Height = 13
+    Caption = 'Port:'
+    FocusControl = edtPort
   end
   object edtEndpoint: TEdit
     Left = 8
@@ -98,7 +106,7 @@ object frmSettings: TfrmSettings
   end
   object btnOK: TButton
     Left = 283
-    Top = 150
+    Top = 200
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
@@ -110,7 +118,7 @@ object frmSettings: TfrmSettings
   end
   object btnCancel: TButton
     Left = 202
-    Top = 150
+    Top = 200
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
@@ -135,7 +143,7 @@ object frmSettings: TfrmSettings
   end
   object cmbIcons: TComboBoxEx
     Left = 8
-    Top = 150
+    Top = 155
     Width = 137
     Height = 22
     Hint = 'Image for the tray icon'
@@ -167,12 +175,25 @@ object frmSettings: TfrmSettings
     Images = ilIcons
   end
   object chkNotification: TCheckBox
-    Left = 261
+    Left = 202
     Top = 109
-    Width = 97
+    Width = 156
     Height = 17
-    Caption = 'Notification'
+    Caption = 'Enable notifications'
     TabOrder = 7
+    OnClick = chkNotificationClick
+  end
+  object edtPort: TEdit
+    Left = 202
+    Top = 156
+    Width = 65
+    Height = 21
+    Hint = 'Unit. Will be shown behind the value'
+    Enabled = False
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 8
+    Text = '8090'
   end
   object trayIcon: TTrayIcon
     Hint = '?'
@@ -972,17 +993,17 @@ object frmSettings: TfrmSettings
     PopupMenu = mnuPopup
     Visible = True
     Left = 246
-    Top = 180
+    Top = 300
   end
   object tmrRequest: TTimer
     Enabled = False
     OnTimer = tmrRequestTimer
     Left = 171
-    Top = 180
+    Top = 300
   end
   object ilIcons: TImageList
     Left = 101
-    Top = 180
+    Top = 300
     Bitmap = {
       494C010104000900040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000002000000001002000000000000020
@@ -1257,7 +1278,7 @@ object frmSettings: TfrmSettings
   end
   object mnuPopup: TPopupMenu
     Left = 32
-    Top = 180
+    Top = 300
     object mniShow: TMenuItem
       Caption = 'Show'
       OnClick = mniShowClick
@@ -1267,8 +1288,8 @@ object frmSettings: TfrmSettings
       OnClick = mniExitClick
     end
   end
-  object ncToast: TNotificationCenter
+  object ncNotify: TNotificationCenter
     Left = 312
-    Top = 180
+    Top = 300
   end
 end

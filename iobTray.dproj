@@ -115,6 +115,11 @@ $(PostBuildEvent)]]></PostBuildEvent>
             <Form>frmSettings</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="uRequestHandler.pas">
+            <Form>RequestHandler</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TWebModule</DesignClass>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -151,18 +156,6 @@ $(PostBuildEvent)]]></PostBuildEvent>
                 <DeployFile LocalName="bin\iobTray.exe" Configuration="Release" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>iobTray.exe</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="icons\Warning.ico" Configuration="Debug" Class="ProjectFile">
-                    <Platform Name="Win32">
-                        <RemoteDir>.\</RemoteDir>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="icons\Window.ico" Configuration="Debug" Class="ProjectFile">
-                    <Platform Name="Win32">
-                        <RemoteDir>.\</RemoteDir>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>

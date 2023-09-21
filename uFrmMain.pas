@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, System.Win.TaskbarCore, Vcl.Taskbar, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.ComCtrls,
-  System.ImageList, Vcl.ImgList, Vcl.Menus, System.Notification;
+  System.ImageList, Vcl.ImgList, Vcl.Menus, IdHTTPWebBrokerBridge, uRequestHandler, System.Notification;
 
 type
   TTraySettings = record
@@ -15,6 +15,7 @@ type
     Interval: Cardinal;
     IconIndex: Integer;
     Notification: Boolean;
+    Port: Word;
     function Load: Boolean;
     function Save: Boolean;
   end;
@@ -39,27 +40,51 @@ type
     mnuPopup: TPopupMenu;
     mniExit: TMenuItem;
     mniShow: TMenuItem;
-    ncToast: TNotificationCenter;
     chkNotification: TCheckBox;
+    ncNotify: TNotificationCenter;
+    Label7: TLabel;
+    edtPort: TEdit;
     procedure btnOKClick(Sender: TObject);
     procedure tmrRequestTimer(Sender: TObject);
     procedure btnCancelClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure mniExitClick(Sender: TObject);
     procedure mniShowClick(Sender: TObject);
+    procedure chkNotificationClick(Sender: TObject);
   private
     FSettings: TTraySettings;
     FRunning: Boolean;
-    FLastValue: string;
+    FServer: TIdHTTPWebBrokerBridge;
     function GetValue(const AUrl: string): string;
     procedure SetValue();
     procedure PrepareIconList;
+    procedure StartServer;
+  protected
+    procedure WndProc(var Message: TMessage); override;
   public
-    { Public-Deklarationen }
+  end;
+
+  TNotificationParser = class(TStringList)
+  private
+    FBody: string;
+    FTitle: string;
+  public
+    constructor Create(const ANotification: string); reintroduce;
+    property Title: string read FTitle;
+    property Body: string read FBody;
+  end;
+
+  TTextMessage = record
+    Msg: Cardinal;
+    MsgFiller: TDWordFiller;
+    WParam: Integer;
+    LParam: String;
+    Result: LRESULT;
   end;
 
 var
   frmSettings: TfrmSettings;
+  RequestHandler: TRequestHandler;
 
 implementation
 
@@ -67,8 +92,10 @@ uses
   System.UITypes,
   System.NetEncoding,
   IdHTTP,
+  IdServerIOHandler,
   XmlIntf,
-  XmlDoc;
+  XmlDoc,
+  Web.WebReq;
 
 {$R *.dfm}
 {$R iobTrayIcons.res}
@@ -88,6 +115,10 @@ begin
     edtInterval.Text := FSettings.Interval.ToString;
     cmbIcons.ItemIndex := FSettings.IconIndex;
     chkNotification.Checked := FSettings.Notification;
+    edtPort.Text := FSettings.Port.ToString;
+    //edtPort.Enabled := chkNotification.Checked;
+    if FSettings.Notification then
+      StartServer;
     if not FRunning and ParamCount.ToBoolean and ParamStr(1).ToLower.Equals('skip') then
     begin
       SetValue;
@@ -116,10 +147,16 @@ begin
   FSettings.Interval := StrToInt(edtInterval.Text);
   FSettings.IconIndex := cmbIcons.ItemIndex;
   FSettings.Notification := chkNotification.Checked;
+  FSettings.Port := StrToInt(edtPort.Text);
   FSettings.Save;
   SetValue;
   FRunning := True;
   Self.Hide;
+end;
+
+procedure TfrmSettings.chkNotificationClick(Sender: TObject);
+begin
+  edtPort.Enabled := chkNotification.Checked;
 end;
 
 procedure TfrmSettings.mniExitClick(Sender: TObject);
@@ -164,6 +201,30 @@ begin
   SetValue;
 end;
 
+procedure TfrmSettings.WndProc(var Message: TMessage);
+var
+  Notification: TNotification;
+  LContent: TNotificationParser;
+begin
+  if Message.Msg <> UM_NOTIFY then
+    inherited WndProc(Message)
+  else begin
+    Notification := ncNotify.CreateNotification;
+    try
+      LContent := TNotificationParser.Create(TTextMessage(Message).LParam);
+      try
+        Notification.Title := LContent.Title;
+        Notification.AlertBody := LContent.Body;
+      finally
+        LContent.Free;
+      end;
+      ncNotify.PresentNotification(Notification);
+    finally
+      Notification.Free;
+    end;
+  end;
+end;
+
 function TfrmSettings.GetValue(const AUrl: string): string;
 var
   HTTP: TIdHTTP;
@@ -190,7 +251,6 @@ end;
 procedure TfrmSettings.SetValue();
 var
   tmpValue: string;
-  Notification: TNotification;
   LValue: string;
 begin
   LValue := GetValue(FSettings.Endpoint);
@@ -205,20 +265,21 @@ begin
 
   trayIcon.Hint := tmpValue;
 
-  if FSettings.Notification and not LValue.Equals(FLastValue) then
-  begin
-    Notification := ncToast.CreateNotification;
-    try
-      Notification.Name := 'ioBroker - Info';
-      Notification.Title := FSettings.Title;
-      Notification.AlertBody := Format('%s %s', [LValue, FSettings.ValueUnit]);
-      ncToast.PresentNotification(Notification);
-    finally
-      Notification.Free;
-    end;
-    FLastValue := LValue;
-  end;
+end;
 
+procedure TfrmSettings.StartServer;
+begin
+  try
+    if WebRequestHandler <> nil then
+      WebRequestHandler.WebModuleClass := MyRequestHandler;
+
+    FServer := TIdHTTPWebBrokerBridge.Create(Self);
+    FServer.DefaultPort := FSettings.Port;
+    FServer.Active := True;
+  except
+    on E:Exception do
+      TaskMessageDlg('Error starting server', E.Message, mtError, [mbOK], 0);
+  end;
 end;
 
 { TTraySettings }
@@ -254,6 +315,9 @@ begin
       Node := XML.DocumentElement.ChildNodes.FindNode('notification');
       if Assigned(Node) then
         Notification := VarAsType(Node.Attributes['value'], varBoolean);
+      Node := XML.DocumentElement.ChildNodes.FindNode('port');
+      if Assigned(Node) then
+        Port := VarAsType(Node.Attributes['value'], varWord);
       Result := True;
     finally
       XML := nil;
@@ -289,6 +353,8 @@ begin
       Node.Attributes['value'] := IconIndex.ToString;
       Node := XML.DocumentElement.AddChild('notification');
       Node.Attributes['value'] := Notification.ToString;
+      Node := XML.DocumentElement.AddChild('port');
+      Node.Attributes['value'] := Port.ToString;
       Filename := ChangeFileExt(Application.ExeName, '.cnf');
       xml.SaveToFile(Filename);
       Result := True;
@@ -299,6 +365,19 @@ begin
     on E:Exception do
       TaskMessageDlg('Error saving settings', E.Message, mtError, [mbOK], 0);
   end;
+end;
+
+{ TNotificationParser }
+
+constructor TNotificationParser.Create(const ANotification: string);
+begin
+  Delimiter := '&';
+  DelimitedText := ANotification;
+  NameValueSeparator := '=';
+  Self[0] := TNetEncoding.URL.Decode(Self[0], [], TEncoding.UTF8);
+  Self[1] := TNetEncoding.URL.Decode(Self[1], [], TEncoding.UTF8);
+  FTitle := Values['title'];
+  FBody := Values['body'];
 end;
 
 end.
