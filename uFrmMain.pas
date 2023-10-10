@@ -59,6 +59,7 @@ type
     procedure SetValue();
     procedure PrepareIconList;
     procedure StartServer;
+    procedure ParseSettings;
   protected
     procedure WndProc(var Message: TMessage); override;
   public
@@ -121,6 +122,7 @@ begin
       StartServer;
     if not FRunning and ParamCount.ToBoolean and ParamStr(1).ToLower.Equals('skip') then
     begin
+      ParseSettings;
       SetValue;
       FRunning := True;
       Application.ShowMainForm := False;
@@ -138,16 +140,7 @@ end;
 
 procedure TfrmSettings.btnOKClick(Sender: TObject);
 begin
-  tmrRequest.Interval := StrToInt(edtInterval.Text);
-  tmrRequest.Enabled := tmrRequest.Interval > 0;
-  trayIcon.IconIndex := cmbIcons.ItemIndex;
-  FSettings.Endpoint := edtEndpoint.Text;
-  FSettings.Title := edtTitle.Text;
-  FSettings.ValueUnit := edtUnit.Text;
-  FSettings.Interval := StrToInt(edtInterval.Text);
-  FSettings.IconIndex := cmbIcons.ItemIndex;
-  FSettings.Notification := chkNotification.Checked;
-  FSettings.Port := StrToInt(edtPort.Text);
+  ParseSettings;
   FSettings.Save;
   SetValue;
   FRunning := True;
@@ -167,6 +160,20 @@ end;
 procedure TfrmSettings.mniShowClick(Sender: TObject);
 begin
   Self.Show;
+end;
+
+procedure TfrmSettings.ParseSettings;
+begin
+  tmrRequest.Interval := StrToInt(edtInterval.Text);
+  tmrRequest.Enabled := tmrRequest.Interval > 0;
+  trayIcon.IconIndex := cmbIcons.ItemIndex;
+  FSettings.Endpoint := edtEndpoint.Text;
+  FSettings.Title := edtTitle.Text;
+  FSettings.ValueUnit := edtUnit.Text;
+  FSettings.Interval := StrToInt(edtInterval.Text);
+  FSettings.IconIndex := cmbIcons.ItemIndex;
+  FSettings.Notification := chkNotification.Checked;
+  FSettings.Port := StrToInt(edtPort.Text);
 end;
 
 procedure TfrmSettings.PrepareIconList;

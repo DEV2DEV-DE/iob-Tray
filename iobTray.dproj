@@ -106,6 +106,7 @@
         <PostBuildEvent><![CDATA[.\bin\sign.cmd
 $(PostBuildEvent)]]></PostBuildEvent>
         <Icon_MainIcon>icon.ico</Icon_MainIcon>
+        <Debugger_RunParams>skip</Debugger_RunParams>
     </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">
