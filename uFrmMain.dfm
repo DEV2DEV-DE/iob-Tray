@@ -80,7 +80,7 @@ object frmSettings: TfrmSettings
     ShowHint = True
     TabOrder = 0
     Text = 'http://192.168.178.9:8082/getPlainValue/alias.0.strom.power'
-    ExplicitWidth = 342
+    ExplicitWidth = 340
   end
   object edtInterval: TEdit
     Left = 88
@@ -113,8 +113,8 @@ object frmSettings: TfrmSettings
     Caption = 'OK'
     TabOrder = 6
     OnClick = btnOKClick
-    ExplicitLeft = 275
-    ExplicitTop = 138
+    ExplicitLeft = 273
+    ExplicitTop = 180
   end
   object btnCancel: TButton
     Left = 202
@@ -125,8 +125,8 @@ object frmSettings: TfrmSettings
     Caption = 'Cancel'
     TabOrder = 5
     OnClick = btnCancelClick
-    ExplicitLeft = 194
-    ExplicitTop = 138
+    ExplicitLeft = 192
+    ExplicitTop = 180
   end
   object edtTitle: TEdit
     Left = 8
@@ -139,7 +139,7 @@ object frmSettings: TfrmSettings
     ShowHint = True
     TabOrder = 1
     Text = 'Leistung:'
-    ExplicitWidth = 342
+    ExplicitWidth = 340
   end
   object cmbIcons: TComboBoxEx
     Left = 8

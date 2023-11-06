@@ -283,6 +283,7 @@ begin
     FServer := TIdHTTPWebBrokerBridge.Create(Self);
     FServer.DefaultPort := FSettings.Port;
     FServer.Active := True;
+    TaskMessageDlg('Server started', 'Server is listening on port ' + FSettings.Port.ToString, mtInformation, [mbOK], 0);
   except
     on E:Exception do
       TaskMessageDlg('Error starting server', E.Message, mtError, [mbOK], 0);
