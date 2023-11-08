@@ -91,6 +91,7 @@
         <AppDPIAwarenessMode>PerMonitor</AppDPIAwarenessMode>
         <VerInfo_Keys>CompanyName=DEV2DEV Softwareentwicklung;FileDescription=ioBroker Tray-Icon;FileVersion=1.0.0.0;InternalName=;LegalCopyright=@2023 DEV2DEV;LegalTrademarks=;OriginalFilename=;ProgramID=$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=Build for the ioBroker community</VerInfo_Keys>
         <Icon_MainIcon>icon.ico</Icon_MainIcon>
+        <Debugger_RunParams>skip</Debugger_RunParams>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>

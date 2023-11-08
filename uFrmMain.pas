@@ -55,6 +55,7 @@ type
     FSettings: TTraySettings;
     FRunning: Boolean;
     FServer: TIdHTTPWebBrokerBridge;
+    FSilent: Boolean;
     function GetValue(const AUrl: string): string;
     procedure SetValue();
     procedure PrepareIconList;
@@ -117,16 +118,16 @@ begin
     cmbIcons.ItemIndex := FSettings.IconIndex;
     chkNotification.Checked := FSettings.Notification;
     edtPort.Text := FSettings.Port.ToString;
-    //edtPort.Enabled := chkNotification.Checked;
-    if FSettings.Notification then
-      StartServer;
     if not FRunning and ParamCount.ToBoolean and ParamStr(1).ToLower.Equals('skip') then
     begin
+      FSilent := True;
       ParseSettings;
       SetValue;
       FRunning := True;
       Application.ShowMainForm := False;
     end;
+    if FSettings.Notification then
+      StartServer;
   end;
 end;
 
@@ -140,11 +141,15 @@ end;
 
 procedure TfrmSettings.btnOKClick(Sender: TObject);
 begin
+  // Enable message if notifications or port has been changed
+  if (chkNotification.Checked <> FSettings.Notification) or (edtPort.Text <> FSettings.Port.ToString) then
+    FSilent := False;
   ParseSettings;
   FSettings.Save;
   SetValue;
   FRunning := True;
   Self.Hide;
+  StartServer;
 end;
 
 procedure TfrmSettings.chkNotificationClick(Sender: TObject);
@@ -280,10 +285,17 @@ begin
     if WebRequestHandler <> nil then
       WebRequestHandler.WebModuleClass := MyRequestHandler;
 
-    FServer := TIdHTTPWebBrokerBridge.Create(Self);
+    if not Assigned(FServer) then
+      FServer := TIdHTTPWebBrokerBridge.Create(Self)
+    else
+      FServer.Active := False;
+
     FServer.DefaultPort := FSettings.Port;
     FServer.Active := True;
-    TaskMessageDlg('Server started', 'Server is listening on port ' + FSettings.Port.ToString, mtInformation, [mbOK], 0);
+
+    if not FSilent then
+      TaskMessageDlg('Server started', 'Server is listening on port ' + FSettings.Port.ToString, mtInformation, [mbOK], 0);
+
   except
     on E:Exception do
       TaskMessageDlg('Error starting server', E.Message, mtError, [mbOK], 0);
